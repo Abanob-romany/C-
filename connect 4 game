@@ -1,0 +1,301 @@
+#include <iostream>
+#define el "\n"
+
+using namespace std;
+int putinput(int column, string arr[7][7])
+{
+
+    int rowNumber = 3;
+    for (int i = 6; i >= 0; i--)
+    {
+        if (arr[i][column] == "-")
+        {
+            rowNumber = i;
+            break;
+        }
+    }
+    return rowNumber;
+}
+void checkInput(string name, string arr[7][7], char checker)
+{
+    char column_number[100];
+    
+    while (true)
+    {
+        cout << "it's " << name <<"'s turn...choose position from 1 to 7: ";
+        cin >> column_number;
+        if (column_number[1] == '\0')
+        {
+            int columnNumber = column_number[0] - '0';
+            if (arr[0][columnNumber - 1] == "-"  && (columnNumber < 8 && columnNumber > 0))
+            {
+                break;
+            }
+            else if (arr[0][columnNumber - 1] != "-" && (columnNumber < 8 && columnNumber > 0))
+            {
+                cout << "This column is full, Try another one\n";
+            }
+            else
+            {
+                cout << "Input number have to be from 1 to 7, Try again\n";
+            }
+        }
+        else 
+        {
+            cout << "Input number have to be from 1 to 7, Try again\n";
+        }
+    }
+    arr[putinput((column_number[0] - '0') - 1, arr)][(column_number[0] - '0') - 1] = checker;
+}
+
+void exportBoard(string arr[7][7])
+{
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 7; j++)
+        {
+            cout << arr[i][j] << "  ";
+        }
+        cout << endl;
+    }
+    cout << "1  2  3  4  5  6  7\n";
+}
+void intializeArray(string arr[7][7])
+{
+    for (int i = 0; i < 7; i++)
+    {
+        for (int j = 0; j < 7; j++)
+        {
+            arr[i][j] = '-';
+        }
+    }
+}
+bool check_main_diagonal(string arr[7][7]) {
+	bool s = 0;
+	for (int r = 6; r >= 0; r--)
+	{
+		for (int c = 0; c < 7; c++)
+        {
+            if (arr[r][c] == arr[r-1][c+1] && arr[r][c] == arr[r-2][c+2] && 
+                arr[r][c] == arr[r-3][c+3] && arr[r][c] != "-" && (c+3) <= 6 && (r-3) >= 0) 
+            {
+			    s = 1;
+			    break;
+		    }
+        }
+        if (s == 1)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+bool check_secound_diagonal(string arr[7][7]) 
+{
+	bool s = 0;
+	for (int r = 6; r >= 0; r--)
+	{
+		for (int c = 0; c < 7; c++)
+        {
+            if (arr[r][c] == arr[r-1][c-1] && arr[r][c] == arr[r-2][c-2] && 
+                arr[r][c] == arr[r-3][c-3] && arr[r][c] != "-" && (c-3) <= 6 && (r-3) >= 0) 
+            {
+			    s = 1;
+			    break;
+		    }
+        }
+        if (s == 1)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+bool check_rows(string arr[7][7]) {
+	bool s;
+	for (int r = 6; r >= 0; r--)
+	{
+		bool s = 0;
+		for (int c = 0; c < 7; c++) 
+        {
+			if (arr[r][c] == arr[r][c+1] && arr[r][c] == arr[r][c+2] && 
+                arr[r][c] == arr[r][c+3] && arr[r][c] != "-")
+            {
+				s = 1;
+				break;
+			}
+		}
+		if (s == 1)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+bool check_columns(string arr[7][7]) {
+	for (int c = 0; c < 7; c++)
+	{
+		bool s = 0;
+		for (int r = 6; r >= 0; r--)
+		{
+			if (arr[r][c] == arr[r-1][c] && arr[r][c] == arr[r-2][c] &&
+                arr[r][c] == arr[r-3][c] && arr[r][c] != "-") {
+				s = 1;
+				break;
+			}
+		}
+        if (s == 1)
+        {
+            return 1; 
+        }
+	}
+	return 0;
+}
+// collect all checker -> (diagonals, rows, coulmns) in one function
+bool check_winner(string name_x, string name_o, string arr[7][7], char checker) {
+    if (check_main_diagonal(arr)) {
+        cout << "main diagonal collected\n\n";
+        if (checker == 'x')
+        {
+            cout << "good game " << name_x << " you are the winner for this round!" << el;
+            cout << "nice try " << name_o << " don't give up for winning!" << el;
+        }
+        else if (checker == 'o')
+        {
+            cout << "good game " << name_o << " you are the winner for this round!" << el;
+            cout << "nice try " << name_x << " don't give up for winning!" << el;
+        }
+        return 1;
+    }
+    else if (check_secound_diagonal(arr)) {
+        cout << "secound diagonal collected\n";
+        if (checker == 'x')
+        {
+            cout << "good game " << name_x << " you are the winner for this round!" << el;
+            cout << "nice try " << name_o << " don't give up for winning!" << el;
+        }
+        else if (checker == 'o')
+        {
+            cout << "good game " << name_o << " you are the winner for this round!" << el;
+            cout << "nice try " << name_x << " don't give up for winning!" << el;
+        }
+        return 1;
+    }
+    else if (check_columns(arr)) {
+        cout << "coulmn collected\n";
+        if (checker == 'x')
+        {
+            cout << "good game " << name_x << " you are the winner for this round!" << el;
+            cout << "nice try " << name_o << " don't give up for winning!" << el;
+        }
+        else if (checker == 'o')
+        {
+            cout << "good game " << name_o << " you are the winner for this round!" << el;
+            cout << "nice try " << name_x << " don't give up for winning!" << el;
+        }
+        return 1;
+    }
+    else if (check_rows(arr)) {
+        cout << "row collected\n";
+        if (checker == 'x')
+        {
+            cout << "good game " << name_x << " you are the winner for this round!" << el;
+            cout << "nice try " << name_o << " don't give up for winning!" << el;
+        }
+        else if (checker == 'o')
+        {
+            cout << "good game " << name_o << " you are the winner for this round!" << el;
+            cout << "nice try " << name_x << " don't give up for winning!" << el;
+        }
+        return 1;
+    }
+    else 
+    {
+        return 0;
+    }
+}
+
+
+
+int main()
+{
+    //rules for the connect 4 game
+    system("CLS");
+    cout << "the rules are simple: try to build a row of four checkers while keeping your opponent from doing the same. "
+            "Sounds easy, but it's not! The vertical strategy creates a unique challenges: "
+            "you must think in a whole new way to block your opponent's moves! ";
+    cout << "Here is how to play: " << el;
+    cout << "1. decide who plays first. players will alternate turns after playing a checker" << el <<
+            "NOTE: the player starting the first game will play second in the next game" << el <<
+            "2. on your turn, choose the position you want to drop your checker in" << el <<
+            "3. play alternates until one player gets four checkers in a row. the four in a row can be horizontal, vertical or diagonal" << el;
+    cout << el << "to start your game press y: ";
+    char yes;
+    bool flag = false;
+    cin >> yes;
+    if (yes == 'y' || yes == 'Y')
+    {
+        flag = true;
+    }
+    if (flag == false)
+    {
+        cout << "see you next time!";
+        return (0);
+    }
+    system("CLS");
+    //take players names:
+    string player_x, player_o;
+    cout << "Enter player(x) name: ";
+    cin >> player_x;
+    cout << "Enter player(o) name: ";
+    cin >> player_o;
+    // Set all possible of turns 7*7=49
+    int turns = 49;
+    // Declare 7*7 array
+    string arr[7][7];
+    // Fill all array cells with '-'
+    intializeArray(arr);
+    // Print array as a board on a terminal
+    exportBoard(arr);
+    // Infinite loop will breaked if any team win or turns finished
+    while (turns--)
+    {
+        // If turns number is even, O will play
+        if (turns % 2 == 0)
+        {
+            // Check if the input number is between 0 and 8(columns numbers), and if column is full
+            checkInput(player_x, arr, 'x');
+            system("CLS");
+            exportBoard(arr);
+            //chek winner
+            if (check_winner(player_x, player_o, arr, 'x'))
+            {
+                break;
+            }
+            else if (turns == 0)
+            {
+                cout << "Wow guys that's not fare we must have winner, go again for it!!"<< el;
+                return 0;
+    
+            }
+        }
+        // If turns number is odd, X will play
+        else
+        {
+            checkInput(player_o, arr, 'o');
+            system("CLS");
+            exportBoard(arr);
+            //chek winner
+            if (check_winner(player_x, player_o, arr, 'o'))
+            {
+                break;
+            }
+            else if (turns == 0)
+            {
+                cout << "Wow guys that's not fare we must have winner, go again for it!!"<< el;
+                return 0;
+    
+            }
+        }
+    }
+}
